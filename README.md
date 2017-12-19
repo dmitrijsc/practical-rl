@@ -23,6 +23,6 @@ week_1: Behind the schedule
 
 ## T&C
 
-I will try to follow Julia best practices when writing the code and optimize it whenever possible.
+I will try to follow Julia best practices when writing code and optimize it whenever and wherever possible.
 
 Please excuse in case of any serious issues and you are welcome to submit your PR.

@@ -1,5 +1,5 @@
 import PyCall
-import POMDPs: MDP
+import POMDPs: MDP, Policy
 
 #
 # In case you are planning to use the code for anything else than ToyText from
@@ -45,7 +45,7 @@ action_index(mdp::ToyTextMDP, a::Int64) = a - 1
 # The only function we can use from OpenAIGym is getting a reward when taking a
 # particular action in a specific step
 #
-function generate_sr(mdp::ToyTextMDP, s::Int64, a::Int64, rng::AbstractRNG)
+function generate_sr(mdp::ToyTextMDP, s::Int64, a::Int64)
 
     state, reward, done = mdp.env[:step](a)
 
@@ -54,4 +54,42 @@ function generate_sr(mdp::ToyTextMDP, s::Int64, a::Int64, rng::AbstractRNG)
     end
 
     return (state + 1, reward)
+end
+
+
+# Play a single episode
+function run_experiment(env::ToyTextMDP, policy::Policy, max_frame_iterations::Int64)
+
+    reward::Float64 = .0
+
+    previous_state::Int64 = initial_state(env)
+
+    for i=1:max_frame_iterations
+
+        current_action = action_index(env, action(policy, previous_state))
+        current_state, current_reward = generate_sr(env, previous_state, current_action)
+        reward += current_reward
+
+        if isterminal(env, current_state)
+            break
+        end
+
+        previous_state = current_state
+
+    end
+
+    reward
+end
+
+#
+# Executes policy on an environment for a number of repeats with a
+# limitation on how many actions/ frames the episode can handle
+#
+function execute_policy(env::ToyTextMDP, policy::Policy, experiment_repeats::Int64, max_frame_iterations::Int64; experiment_index = nothing, verbose = false)
+
+    if experiment_index != nothing && verbose == true
+        println("Policy execution #$experiment_index")
+    end
+
+    return sum(map(x -> run_experiment(env, policy, max_frame_iterations), zeros(experiment_repeats)))
 end

@@ -15,43 +15,6 @@ EvolutionPolicySolver(;training_experiment_count::Int64=10^2, experiment_repeats
 
 function solve(solver::EvolutionPolicySolver, pomdp::MDP; verbose = true)
 
-    # Play a single episode
-    function run_experiment(env, policy, max_frame_iterations)
-
-        reward::Float64 = .0
-
-        previous_state::Int64 = initial_state(env)
-
-        for i=1:max_frame_iterations
-
-            current_action = action_index(env, action(policy, previous_state))
-            current_state, current_reward = generate_sr(env, previous_state, current_action)
-            reward += current_reward
-
-            if isterminal(env, current_state)
-                break
-            end
-
-            previous_state = current_state
-
-        end
-
-        reward
-    end
-
-    #
-    # Executes policy on an environment for a number of repeats with a
-    # limitation on how many actions/ frames the episode can handle
-    #
-    function execute_policy(env, policy, experiment_repeats, max_frame_iterations; experiment_index = nothing, verbose = false)
-
-        if experiment_index != nothing && verbose == true
-            println("Policy Index: $experiment_index")
-        end
-
-        return sum(map(x -> run_experiment(env, policy, max_frame_iterations), zeros(experiment_repeats)))
-    end
-
     policy_values = map(x -> EvolutionPolicy(pomdp), 1:solver.training_experiment_count)
     policy_scores = map(x -> execute_policy(pomdp, policy_values[x], solver.experiment_repeats, solver.max_frame_iterations; experiment_index = x, verbose = x == 1 || x % solver.print_every_n == 0), 1:solver.training_experiment_count)
 

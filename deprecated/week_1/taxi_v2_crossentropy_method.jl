@@ -26,15 +26,15 @@ end
 # Define the policy action function
 function action(policy::StateProbActionPolicy, r, s, A′)
 
-    state_index = (typeof(s) == Array{Int64, 0} ? parse(Int64, string(s)) : s) # fixing bug, when using Julia
+    state_index = s[] + 1 # fixing bug, when using Julia
     action_probs = policy.states[:, state_index]
 
-    sample(0:(length(action_probs) - 1), Weights(action_probs))
+    sample(env_space_actions, Weights(action_probs))
 end
 
 # Play the game
 # Just like before, but we also record all states and actions we took.
-function play_episode(policy, t_max = 10^4)
+function play_episode(policy, t_max = 10^3)
 
     # Initiate return with a fixed size
     states, actions = zeros(t_max), zeros(t_max)
@@ -71,8 +71,8 @@ function train(epochs = 10)
 
     global policy_values
 
-    n_samples = 250  #sample this many samples
-    quantile_threshold = .5  #take this percent of session with highest rewards
+    n_samples = 500  #sample this many samples
+    quantile_threshold = .75  #take this percent of session with highest rewards
     smoothing = .1  #add this thing to all counts for stability
     learning_rate = 0.1
 

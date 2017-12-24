@@ -58,17 +58,34 @@ end
 
 
 # Play a single episode
-function run_experiment(env::ToyTextMDP, policy::Policy, max_frame_iterations::Int64)
+function run_experiment(env::ToyTextMDP, policy::Policy, max_frame_iterations::Int64; keep_history = false)
 
     reward::Float64 = .0
-
     previous_state::Int64 = initial_state(env)
+
+    #
+    # We might decide to keep the history for some of our learning algorithms
+    # therefore we need to initialize lists of a fixed size
+    #
+    list_size = if keep_history max_frame_iterations else zero(max_frame_iterations) end
+    states, actions = zeros(Int64, list_size), zeros(Int64, list_size)
+    frames_played = 0
 
     for i=1:max_frame_iterations
 
-        current_action = action_index(env, action(policy, previous_state))
+        current_action_i = action(policy, previous_state)
+        current_action = action_index(env, current_action_i)
         current_state, current_reward = generate_sr(env, previous_state, current_action)
         reward += current_reward
+        frames_played += 1
+
+        #
+        # In case we keep history lets track it
+        #
+        if keep_history
+            states[i] = previous_state
+            actions[i] = current_action_i
+        end
 
         if isterminal(env, current_state)
             break
@@ -78,7 +95,14 @@ function run_experiment(env::ToyTextMDP, policy::Policy, max_frame_iterations::I
 
     end
 
-    reward
+    #
+    # In case we keep history we should also cut in based on a number of frames required
+    #
+    if keep_history
+        return states[1:frames_played], actions[1:frames_played], reward
+    else
+        return states, actions, reward
+    end
 end
 
 #
@@ -91,5 +115,5 @@ function execute_policy(env::ToyTextMDP, policy::Policy, experiment_repeats::Int
         println("Policy execution #$experiment_index")
     end
 
-    return sum(map(x -> run_experiment(env, policy, max_frame_iterations), zeros(experiment_repeats)))
+    return sum(map(x -> run_experiment(env, policy, max_frame_iterations)[3], zeros(experiment_repeats)))
 end

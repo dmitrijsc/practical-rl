@@ -8,7 +8,7 @@ About Practical RL (from their GitHub): A course on reinforcement learning in th
 
 This code was tested on Julia 0.6.1.
 
-Please follow standard process to configure `Open AI` and `POMDPs.jl` from the corresponding package repository.
+Please follow standard process to configure `Open AI gym`, `POMDPs.jl` and `MXNet.jl` from the corresponding package repository.
 
 ## Table of contents
 
@@ -18,8 +18,12 @@ week_0: FrozenLake with genetic algorithms
 - FrozenLake (4x4): average score 0.86
 - FrozenLake (8x8): average score 0.97
 
-week_1: Behind the schedule
-- I was busy rewriting the code to work with POMDPs package
+week_1: Cross-Entropy Method
+- FrozenLake8x8, Taxi-v2 (CEM)
+- CartPole-v0 (Deep Cross-Entropy Method using MXNet)
+
+
+
 
 ## T&C
 

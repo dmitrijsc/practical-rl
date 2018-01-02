@@ -100,7 +100,7 @@ function run_experiment(env::ClassicControlMDP, policy::Policy, max_frame_iterat
     # In case we keep history we should also cut in based on a number of frames required
     #
     if keep_history
-        return states[1:frames_played], actions[1:frames_played], reward
+        return states[:, 1:frames_played], actions[1:frames_played], reward
     else
         return states, actions, reward
     end

@@ -115,5 +115,5 @@ function execute_policy(env::ToyTextMDP, policy::Policy, experiment_repeats::Int
         println("Policy execution #$experiment_index")
     end
 
-    return sum(map(x -> run_experiment(env, policy, max_frame_iterations)[3], zeros(experiment_repeats)))
+    return mean(map(x -> run_experiment(env, policy, max_frame_iterations)[3], zeros(experiment_repeats)))
 end

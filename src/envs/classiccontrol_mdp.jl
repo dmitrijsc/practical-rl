@@ -25,10 +25,10 @@ end
 #
 function ClassicControlMDP(env::PyCall.PyObject)
 
-    states = Vector{Int64}(1:env[:observation_space][:n])
-    actions = Vector{Int64}(1:env[:action_space][:n])
+    states = env[:observation_space][:shape][1]
+    actions = Vector{Int64}(0:(env[:action_space][:n] - 1))
 
-    return ToyTextMDP(env, states, actions)
+    return ClassicControlMDP(env, states, actions)
 end
 
 #
@@ -40,7 +40,7 @@ n_states(mdp::ClassicControlMDP) = mdp.state_space_size
 n_actions(mdp::ClassicControlMDP) = length(mdp.action_space)
 initial_state(mdp::ClassicControlMDP, rng::AbstractRNG = MersenneTwister(0)) = mdp.env[:reset]() .* 1.0
 isterminal(mdp::ClassicControlMDP, s::Vector{Float64}) = iszero(s)
-action_index(mdp::ClassicControlMDP, a::Int64) = a - 1
+action_index(mdp::ClassicControlMDP, a::Int64) = a
 
 #
 # The only function we can use from OpenAIGym is getting a reward when taking a
@@ -59,7 +59,7 @@ end
 
 
 # Play a single episode
-function run_experiment(env::ClassicControlMDP, policy::Policy, max_frame_iterations::Int64; keep_history = false)
+function run_experiment(env::ClassicControlMDP, policy::Policy; max_frame_iterations::Int64 = 100, keep_history = false)
 
     reward::Float64 = .0
     previous_state::Vector{Float64} = initial_state(env)
@@ -69,7 +69,7 @@ function run_experiment(env::ClassicControlMDP, policy::Policy, max_frame_iterat
     # therefore we need to initialize lists of a fixed size
     #
     list_size = if keep_history max_frame_iterations else zero(max_frame_iterations) end
-    states, actions = zeros(Int64, env.state_space_size, list_size), zeros(Int64, list_size)
+    states, actions = zeros(Float64, env.state_space_size, list_size), zeros(Int64, list_size)
     frames_played = 0
 
     for i=1:max_frame_iterations
@@ -110,11 +110,11 @@ end
 # Executes policy on an environment for a number of repeats with a
 # limitation on how many actions/ frames the episode can handle
 #
-function execute_policy(env::ToyTextMDP, policy::Policy, experiment_repeats::Int64, max_frame_iterations::Int64; experiment_index = nothing, verbose = false)
+function execute_policy(env::ClassicControlMDP, policy::Policy, experiment_repeats::Int64, max_frame_iterations::Int64; experiment_index = nothing, verbose = false)
 
     if experiment_index != nothing && verbose == true
         println("Policy execution #$experiment_index")
     end
 
-    return sum(map(x -> run_experiment(env, policy, max_frame_iterations)[3], zeros(experiment_repeats)))
+    return mean(map(x -> run_experiment(env, policy, max_frame_iterations)[3], zeros(experiment_repeats)))
 end

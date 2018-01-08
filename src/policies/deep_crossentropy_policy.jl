@@ -35,13 +35,9 @@ function DeepCrossentropyPolicy(state_length::Int64, action_count::Int64, nnet_s
         push!(nnet_spec, action_count)
     end
 
-    # define mxnet symbol variables
-    data = mx.Variable(:data)
-    label = mx.Variable(:label)
-
     # create simple mlp model
     mlp = @mx.chain mx.Variable(:data) => mx.MLP(nnet_spec) => mx.SoftmaxOutput(mx.Variable(:label))
-    model = mx.FeedForward(mlp, context = mx.gpu(0))
+    model = mx.FeedForward(mlp)
 
     # initialize data provider with identical dataset for all possible outcomes
     # this is done to have initial weight initialization

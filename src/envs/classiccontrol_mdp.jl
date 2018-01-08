@@ -13,7 +13,7 @@ import POMDPs: MDP, Policy
 # Define a new type responsible for working with Classic Control from OpenAi gym
 # It also supports other environments with a fixes number of states and actions
 #
-immutable ClassicControlMDP <: MDP{Vector{Float64}, Int64}
+struct ClassicControlMDP <: MDP{Vector{Float64}, Int64}
     env::PyCall.PyObject
     state_space_size::Int64
     action_space::Vector{Int64}

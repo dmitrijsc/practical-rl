@@ -62,17 +62,6 @@ function solve(solver::DeepCrossentropyPolicySolver, pomdp::MDP; verbose = true)
 
         println("threshold: $(round(reward_threshold, 2)), mean score: $(round(mean(batch_rewards), 2))")
 
-
-        #
-        # # Create a new policy matrix which has identical structure and smoothing value
-        # policy_values = zeros(policy.action_map) + smoothing;
-        # for ep in 1:sum(reward_valid_indices)
-        #     map(x -> policy_values[filtered_actions[ep][x] + 1, filtered_states[ep][x] + 1] += 1 , 1:length(filtered_actions[ep]));
-        # end
-        #
-        # policy_values = policy_values ./ sum(policy_values, 1)
-        # policy = CrossentropyPolicy(pomdp, policy_values, Int64(mean(batch_rewards)))
-
     end
 
     return policy

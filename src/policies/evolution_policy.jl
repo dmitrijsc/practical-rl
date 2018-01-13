@@ -5,7 +5,6 @@ import POMDPs: MDP, Policy
 #
 type EvolutionPolicy <: Policy
     action_map::Vector{Int64}
-    score::Int64
 end
 
 #
@@ -13,7 +12,7 @@ end
 #
 function EvolutionPolicy(pomdp::MDP; rng::AbstractRNG = MersenneTwister(0))
     default_map = rand(actions(pomdp), n_states(pomdp)) # all zeros
-    return EvolutionPolicy(default_map, 0)
+    return EvolutionPolicy(default_map)
 end
 
 #
@@ -35,7 +34,7 @@ function EvolutionPolicy(pomdp::MDP, p1::EvolutionPolicy, p2::EvolutionPolicy; p
 
     new_action_map = m .* p1.action_map + (1 - m) .* p2.action_map
 
-    return EvolutionPolicy(Vector{Int64}(new_action_map), 0)
+    return EvolutionPolicy(Vector{Int64}(new_action_map))
 end
 
 #

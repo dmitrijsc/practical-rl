@@ -68,7 +68,7 @@ function solve(solver::EvolutionPolicySolver, pomdp::MDP; verbose = true)
 
     best_policy_index = sortperm(policy_scores)[end]
     best_policy = policy_values[best_policy_index]
-    best_policy.score = policy_scores[best_policy_index]
+    # best_policy.score = policy_scores[best_policy_index]
 
     return best_policy
 

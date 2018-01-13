@@ -6,7 +6,7 @@ About Practical RL (from their GitHub): A course on reinforcement learning in th
 
 ## Setup
 
-This code was tested on Julia 0.6.1.
+This code was tested on Julia 0.6.1. It will be using MXNet for all deep learning activities.
 
 Please follow standard process to configure `Open AI gym`, `POMDPs.jl` and `MXNet.jl` from the corresponding package repository.
 
@@ -20,13 +20,18 @@ week_0: FrozenLake with genetic algorithms
 
 week_1: Cross-Entropy Method
 - FrozenLake8x8, Taxi-v2 (CEM)
-- CartPole-v0 (Deep Cross-Entropy Method using MXNet)
+- CartPole-v0 (Deep Cross-Entropy Method using MXNet): average score 200.0
 
-
-
+week_2: Value-table methods
+- Taxi
+- PacMan
 
 ## T&C
 
 I will try to follow Julia best practices when writing code and optimize it whenever and wherever possible.
 
 Please excuse in case of any serious issues and you are welcome to submit your PR.
+
+## Contacts
+
+Feel free to contact me over Issues, solveai.net or Julia Slack channel @dmitrijsc.

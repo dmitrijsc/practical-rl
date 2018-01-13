@@ -35,7 +35,7 @@ function solve(solver::DeepCrossentropyPolicySolver, pomdp::MDP; verbose = true)
                 println("Epoch: $i, Episode: $j")
             end
 
-            session_states, session_actions, session_reward = run_experiment(pomdp, policy; max_frame_iterations = solver.max_frame_iterations, keep_history = true)
+            session_states, session_actions, session_reward, session_states_new = run_experiment(pomdp, policy; max_frame_iterations = solver.max_frame_iterations, keep_history = true)
 
             index_start = batch_records_index + 1
             index_end = batch_records_index + size(session_states)[2]

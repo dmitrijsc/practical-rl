@@ -69,7 +69,11 @@ function run_experiment(env::ClassicControlMDP, policy::Policy; max_frame_iterat
     # therefore we need to initialize lists of a fixed size
     #
     list_size = if keep_history max_frame_iterations else zero(max_frame_iterations) end
-    states, actions = zeros(Float64, env.state_space_size, list_size), zeros(Int64, list_size)
+
+    states = zeros(Float64, env.state_space_size, list_size)
+    new_states = zeros(Float64, env.state_space_size, list_size)
+    actions = zeros(Int64, list_size)
+
     frames_played = 0
 
     for i=1:max_frame_iterations
@@ -85,6 +89,7 @@ function run_experiment(env::ClassicControlMDP, policy::Policy; max_frame_iterat
         #
         if keep_history
             states[:, i] = previous_state
+            new_states[:, i] = current_state
             actions[i] = current_action_i
         end
 
@@ -100,9 +105,9 @@ function run_experiment(env::ClassicControlMDP, policy::Policy; max_frame_iterat
     # In case we keep history we should also cut in based on a number of frames required
     #
     if keep_history
-        return states[:, 1:frames_played], actions[1:frames_played], reward
+        return states[:, 1:frames_played], actions[1:frames_played], reward, new_states
     else
-        return states, actions, reward
+        return states, actions, reward, new_states
     end
 end
 

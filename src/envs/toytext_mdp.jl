@@ -68,7 +68,7 @@ function run_experiment(env::ToyTextMDP, policy::Policy, max_frame_iterations::I
     # therefore we need to initialize lists of a fixed size
     #
     list_size = if keep_history max_frame_iterations else zero(max_frame_iterations) end
-    states, actions = zeros(Int64, list_size), zeros(Int64, list_size)
+    states, new_states, actions = zeros(Int64, list_size), zeros(Int64, list_size), zeros(Int64, list_size)
     frames_played = 0
 
     for i=1:max_frame_iterations
@@ -84,6 +84,7 @@ function run_experiment(env::ToyTextMDP, policy::Policy, max_frame_iterations::I
         #
         if keep_history
             states[i] = previous_state
+            new_states[i] = current_state
             actions[i] = current_action_i
         end
 
@@ -99,9 +100,9 @@ function run_experiment(env::ToyTextMDP, policy::Policy, max_frame_iterations::I
     # In case we keep history we should also cut in based on a number of frames required
     #
     if keep_history
-        return states[1:frames_played], actions[1:frames_played], reward
+        return states[1:frames_played], actions[1:frames_played], reward, new_states[1:frames_played]
     else
-        return states, actions, reward
+        return states, actions, reward, new_states
     end
 end
 

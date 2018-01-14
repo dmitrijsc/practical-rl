@@ -23,7 +23,7 @@ week_1: Cross-Entropy Method
 - CartPole-v0 (Deep Cross-Entropy Method using MXNet): average score 200.0
 
 week_2: Value-table methods (work in progress)
-- Taxi-v2: average score 7.1/9.5
+- Taxi-v2: average score 8.7/9.5
 - PacMan - NA
 
 ## T&C

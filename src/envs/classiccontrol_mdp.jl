@@ -73,6 +73,7 @@ function run_experiment(env::ClassicControlMDP, policy::Policy; max_frame_iterat
     states = zeros(Float64, env.state_space_size, list_size)
     new_states = zeros(Float64, env.state_space_size, list_size)
     actions = zeros(Int64, list_size)
+    rewards = zeros(Float64, list_size)
 
     frames_played = 0
 
@@ -91,6 +92,7 @@ function run_experiment(env::ClassicControlMDP, policy::Policy; max_frame_iterat
             states[:, i] = previous_state
             new_states[:, i] = current_state
             actions[i] = current_action_i
+            rewards[i] = current_reward
         end
 
         if isterminal(env, current_state)
@@ -105,7 +107,7 @@ function run_experiment(env::ClassicControlMDP, policy::Policy; max_frame_iterat
     # In case we keep history we should also cut in based on a number of frames required
     #
     if keep_history
-        return states[:, 1:frames_played], actions[1:frames_played], reward, new_states
+        return states[:, 1:frames_played], actions[1:frames_played], reward, new_states[1:frames_played], rewards[1:frames_played]
     else
         return states, actions, reward, new_states
     end

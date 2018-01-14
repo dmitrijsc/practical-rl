@@ -34,7 +34,7 @@ function solve(solver::CrossentropyPolicySolver, pomdp::MDP; verbose = true)
                 println("Epoch: $i, Episode: $j")
             end
 
-            session_states, session_actions, session_reward, session_states_new = run_experiment(pomdp, policy, solver.max_frame_iterations; keep_history = true)
+            session_states, session_actions, session_reward, session_states_new, session_rewards = run_experiment(pomdp, policy, solver.max_frame_iterations; keep_history = true)
             push!(batch_states, session_states)
             push!(batch_actions, session_actions)
             append!(batch_rewards, session_reward)

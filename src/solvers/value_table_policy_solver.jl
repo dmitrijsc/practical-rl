@@ -24,25 +24,51 @@ function solve(solver::ValueTablePolicySolver, pomdp::MDP; verbose = true)
             println("Epoch: $i")
         end
 
-        states_a, state_actions, state_reward, states_b, state_rewards = run_experiment(pomdp, policy, solver.max_frame_iterations; keep_history = true)
+        #
+        # Q-learning implementation that updates on every step
+        #
+        previous_state::Int64 = initial_state(pomdp)
+        rewards = 0.0
 
-        for state_index in 1:length(states_a)
+        for j=1:solver.max_frame_iterations
 
-            current_action = state_actions[state_index]
-            current_state = states_a[state_index]
+            current_action_i = action(policy, previous_state)
+            current_action = action_index(pomdp, current_action_i)
+            current_state, current_reward = generate_sr(pomdp, previous_state, current_action)
+            current_state_terminal = isterminal(pomdp, current_state)
 
-            next_value = if isterminal(pomdp, states_b[state_index]) 0 else maximum(policy.value_map[:, states_b[state_index]]) end
-            new_value = state_rewards[state_index] + solver.discount * next_value
-            new_updated_value = solver.learning_rate * new_value + (1 - solver.learning_rate) * policy.value_map[current_action, current_state]
+            next_value = if current_state_terminal 0 else maximum(policy.value_map[:, current_state]) end
+            new_value = current_reward + solver.discount * next_value
+            new_updated_value = solver.learning_rate * new_value + (1 - solver.learning_rate) * policy.value_map[current_action_i, previous_state]
 
-            policy.value_map[current_action, current_state] = new_updated_value
+            policy.value_map[current_action_i, previous_state] = new_updated_value
+            previous_state = current_state
+            rewards += current_reward
+
+            if current_state_terminal
+                break
+            end
         end
+
+        # states_a, state_actions, state_reward, states_b, state_rewards = run_experiment(pomdp, policy, solver.max_frame_iterations; keep_history = true)
+        #
+        # for state_index in 1:length(states_a)
+        #
+        #     current_action = state_actions[state_index]
+        #     current_state = states_a[state_index]
+        #
+        #     next_value = if isterminal(pomdp, states_b[state_index]) 0 else maximum(policy.value_map[:, states_b[state_index]]) end
+        #     new_value = state_rewards[state_index] + solver.discount * next_value
+        #     new_updated_value = solver.learning_rate * new_value + (1 - solver.learning_rate) * policy.value_map[current_action, current_state]
+        #
+        #     policy.value_map[current_action, current_state] = new_updated_value
+        # end
 
         if 0 < solver.epsilon_discount < 1
             policy.epsilon *= solver.epsilon_discount
         end
 
-        last_rewards[i] = sum(state_rewards)
+        last_rewards[i] = rewards
 
         if verbose && (i > 100 && i % solver.print_every_n == 0)
             cum_sum_reward = sum(last_rewards[i-101:i])

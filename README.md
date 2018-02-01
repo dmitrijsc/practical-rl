@@ -22,9 +22,11 @@ week_1: Cross-Entropy Method
 - FrozenLake8x8, Taxi-v2 (CEM)
 - CartPole-v0 (Deep Cross-Entropy Method using MXNet): average score 200.0
 
-week_2: Value-table methods (work in progress)
-- Taxi-v2: average score 8.7/9.5
-- PacMan - NA
+week_2: Q-learning (Value-table methods)
+- Taxi-v2: average score 8.7/8.5, apprx. 4000 epochs of 100 games
+
+week_3: SARSA
+- Taxi-v2: NA
 
 ## T&C
 

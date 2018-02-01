@@ -1,6 +1,6 @@
 # Reinforcement learning in Julia
 
-Purpose of this project/ repository is to replicate Practical RL course (https://github.com/yandexdataschool/Practical_RL) exercises in Julia.
+Purpose of this project/ repository is to replicate [Practical RL course](https://github.com/yandexdataschool/Practical_RL) exercises in Julia.
 
 About Practical RL (from their GitHub): A course on reinforcement learning in the wild. Taught on-campus in HSE and Yandex SDA.
 
@@ -26,7 +26,7 @@ week_2: Q-learning (Value-table method)
 - Taxi-v2: average score 8.7/8.5 ([post](https://solveai.net/2018/01/15/julia-q-learning-using-value-table-to-solve-taxi-v2/), [post 2](https://solveai.net/2018/02/01/julia-q-learning-and-epsilon-discount-factor/))
 
 week_3: SARSA
-- Taxi-v2: NA
+- Taxi-v2: 8.5/8.5
 
 ## T&C
 

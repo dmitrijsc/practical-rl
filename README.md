@@ -15,15 +15,15 @@ Please follow standard process to configure `Open AI gym`, `POMDPs.jl` and `MXNe
 The following objectives are implemented and available as a separate Julia files:
 
 week_0: FrozenLake with genetic algorithms
-- FrozenLake (4x4): average score 0.86
+- FrozenLake (4x4): average score 0.86 ([post](https://solveai.net/2017/12/07/playing-frozenlake-with-genetic-algorithms/))
 - FrozenLake (8x8): average score 0.97
 
 week_1: Cross-Entropy Method
-- FrozenLake8x8, Taxi-v2 (CEM)
-- CartPole-v0 (Deep Cross-Entropy Method using MXNet): average score 200.0
+- FrozenLake8x8, Taxi-v2 (CEM) ([post](https://solveai.net/2017/12/24/playing-frozenlake-using-cross-entropy-method/), [post2](https://solveai.net/2017/12/24/difference-between-evolutionary-methods-and-methods-that-learn-value-functions/))
+- CartPole-v0 (Deep Cross-Entropy Method using MXNet): average score 200.0 ([post](https://solveai.net/2018/01/06/playing-cartpole-with-deep-cross-entropy-method-using-julia-and-mxnet/), [post 2](https://solveai.net/2018/01/08/importance-of-learning-rate-when-running-deep-cross-entropy-method/))
 
 week_2: Q-learning (Value-table method)
-- Taxi-v2: average score 8.7/8.5 ( [Blogpost](https://solveai.net/2018/01/15/julia-q-learning-using-value-table-to-solve-taxi-v2/), [Blogpost 2](https://solveai.net/2018/02/01/julia-q-learning-and-epsilon-discount-factor/) )
+- Taxi-v2: average score 8.7/8.5 ([post](https://solveai.net/2018/01/15/julia-q-learning-using-value-table-to-solve-taxi-v2/), [post 2](https://solveai.net/2018/02/01/julia-q-learning-and-epsilon-discount-factor/))
 
 week_3: SARSA
 - Taxi-v2: NA

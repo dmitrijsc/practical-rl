@@ -23,7 +23,7 @@ week_1: Cross-Entropy Method
 - CartPole-v0 (Deep Cross-Entropy Method using MXNet): average score 200.0
 
 week_2: Q-learning (Value-table method)
-- Taxi-v2: average score 8.7/8.5 ( (Blogpost)[https://solveai.net/2018/02/01/julia-q-learning-and-epsilon-discount-factor/] )
+- Taxi-v2: average score 8.7/8.5 ( [Blogpost](https://solveai.net/2018/01/15/julia-q-learning-using-value-table-to-solve-taxi-v2/), [Blogpost 2](https://solveai.net/2018/02/01/julia-q-learning-and-epsilon-discount-factor/) )
 
 week_3: SARSA
 - Taxi-v2: NA

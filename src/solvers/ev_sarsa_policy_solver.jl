@@ -17,6 +17,7 @@ function solve(solver::EVSarsaPolicySolver, pomdp::MDP; verbose = true)
 
     policy = ValueTablePolicy(pomdp, solver.epsilon, solver.learning_rate, solver.discount)
     last_rewards = zeros(Float64, solver.epochs)
+    actions_count = n_actions(pomdp)
 
     for i=1:solver.epochs
 
@@ -39,7 +40,7 @@ function solve(solver::EVSarsaPolicySolver, pomdp::MDP; verbose = true)
 
             # expected value sarsa sum all values from a next state
             next_value = if current_state_terminal 0 else  sum(policy.value_map[:, current_state]) end
-            new_value = current_reward + solver.discount * next_value
+            new_value = current_reward + solver.discount * next_value / actions_count
             new_updated_value = solver.learning_rate * new_value + (1 - solver.learning_rate) * policy.value_map[current_action_i, previous_state]
 
             policy.value_map[current_action_i, previous_state] = new_updated_value

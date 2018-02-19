@@ -50,20 +50,6 @@ function solve(solver::ValueTablePolicySolver, pomdp::MDP; verbose = true)
             end
         end
 
-        # states_a, state_actions, state_reward, states_b, state_rewards = run_experiment(pomdp, policy, solver.max_frame_iterations; keep_history = true)
-        #
-        # for state_index in 1:length(states_a)
-        #
-        #     current_action = state_actions[state_index]
-        #     current_state = states_a[state_index]
-        #
-        #     next_value = if isterminal(pomdp, states_b[state_index]) 0 else maximum(policy.value_map[:, states_b[state_index]]) end
-        #     new_value = state_rewards[state_index] + solver.discount * next_value
-        #     new_updated_value = solver.learning_rate * new_value + (1 - solver.learning_rate) * policy.value_map[current_action, current_state]
-        #
-        #     policy.value_map[current_action, current_state] = new_updated_value
-        # end
-
         if 0 < solver.epsilon_discount < 1
             policy.epsilon *= solver.epsilon_discount
         end

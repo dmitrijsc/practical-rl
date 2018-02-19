@@ -49,8 +49,6 @@ function solve(solver::EVSarsaPolicySolver, pomdp::MDP; verbose = true)
 
             if current_state_terminal
                 break
-            else
-
             end
         end
 

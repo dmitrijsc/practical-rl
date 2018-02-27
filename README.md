@@ -26,7 +26,10 @@ week_2: Q-learning (Value-table method)
 - Taxi-v2: average score 8.7/8.5 ([post](https://solveai.net/2018/01/15/julia-q-learning-using-value-table-to-solve-taxi-v2/), [post 2](https://solveai.net/2018/02/01/julia-q-learning-and-epsilon-discount-factor/))
 
 week_3: SARSA
-- Taxi-v2: 8.5/8.5
+- Taxi-v2: 8.5/8.5 ([post](https://solveai.net/2018/02/01/julia-solving-open-ai-taxi-v2-using-sarsa-algorithm/))
+
+week_4: DQN
+- CartPole-v0: 100/100 in 1 episode.
 
 ## T&C
 

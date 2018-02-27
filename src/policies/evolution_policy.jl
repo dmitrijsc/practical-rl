@@ -3,7 +3,7 @@ import POMDPs: MDP, Policy
 #
 # Define a policy that will act as an evolutionary/ genetic policy
 #
-type EvolutionPolicy <: Policy
+mutable struct EvolutionPolicy <: Policy
     action_map::Vector{Int64}
 end
 

@@ -34,13 +34,27 @@ function DQNPolicy(state_length::Int64, action_count::Int64, nnet_spec::Vector{I
 
     # add number of classes as a last hidden layyer if it is different
     # from the definition supplied by user
+    if length(nnet_spec) > 1
+        throw(ArgumentError("nnet_spec: multi layers networks are not yet supported."))
+    end
+
     if nnet_spec[end] != action_count
         push!(nnet_spec, action_count)
     end
 
     # create simple mlp model
-    mlp = @mx.chain mx.Variable(:data) => mx.MLP(nnet_spec) => mx.LinearRegressionOutput(mx.Variable(:label))
+    # nnet_spec = [(3, :tanh), 2]
+    # mlp = @mx.chain mx.Variable(:data) => mx.MLP(nnet_spec) => mx.LinearRegressionOutput(mx.Variable(:label))
+
+    mlp = @mx.chain mx.Variable(:data) =>
+            mx.FullyConnected(num_hidden=nnet_spec[1]) =>
+            mx.Activation(act_type=:tanh) =>
+            mx.FullyConnected(num_hidden=action_count) =>
+            mx.LinearRegressionOutput(mx.Variable(:label))
+
     model = mx.FeedForward(mlp)
+
+    # println(model)
 
     # initialize data provider with identical dataset for all possible outcomes
     # this is done to have initial weight initialization
@@ -75,5 +89,5 @@ end
 
 function update(policy::DQNPolicy, s::Vector{Float64}, v::Vector{Float32})
     data_provider = mx.ArrayDataProvider(:data => repmat(s, 1, 2), :label => repmat(v, 1, 2))
-    return mx.fit(policy.net, policy.optimizer, data_provider; n_epoch = 1, verbosity = 0)
+    return mx.fit(policy.net, policy.optimizer, data_provider; n_epoch = 3, verbosity = 0)
 end

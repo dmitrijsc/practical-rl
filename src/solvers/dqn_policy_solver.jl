@@ -56,7 +56,7 @@ function solve(solver::DQNPolicySolver, pomdp::MDP; verbose = true)
             policy.epsilon *= solver.epsilon_discount
         end
 
-        println(rewards)
+        # println(rewards)
         last_rewards[i] = rewards
 
         if verbose && (i > 100 && i % solver.print_every_n == 0)

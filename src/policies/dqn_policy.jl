@@ -34,35 +34,34 @@ function DQNPolicy(state_length::Int64, action_count::Int64, nnet_spec::Vector{I
 
     # add number of classes as a last hidden layyer if it is different
     # from the definition supplied by user
-    if length(nnet_spec) > 1
-        throw(ArgumentError("nnet_spec: multi layers networks are not yet supported."))
-    end
+    #if length(nnet_spec) > 1
+    #    throw(ArgumentError("nnet_spec: multi layers networks are not yet supported."))
+    #end
 
-    if nnet_spec[end] != action_count
-        push!(nnet_spec, action_count)
-    end
+    #if nnet_spec[end] != action_count
+    #    push!(nnet_spec, action_count)
+    #end
 
     # create simple mlp model
     # nnet_spec = [(3, :tanh), 2]
     # mlp = @mx.chain mx.Variable(:data) => mx.MLP(nnet_spec) => mx.LinearRegressionOutput(mx.Variable(:label))
 
-    mlp = @mx.chain mx.Variable(:data) =>
-            mx.FullyConnected(num_hidden=nnet_spec[1]) =>
-            mx.Activation(act_type=:tanh) =>
-            mx.FullyConnected(num_hidden=action_count) =>
-            mx.LinearRegressionOutput(mx.Variable(:label))
+    mlp = @mx.chain mx.Variable(:data)
+    for layer_size in nnet_spec
+        mlp = mx.FullyConnected(mlp, num_hidden=layer_size)
+        mlp = mx.Activation(mlp, act_type=:relu)
+    end
+
+    mlp = mx.FullyConnected(mlp, num_hidden=action_count)
+    mlp = mx.LinearRegressionOutput(mlp, mx.Variable(:label))
 
     model = mx.FeedForward(mlp)
-
-    # println(model)
 
     # initialize data provider with identical dataset for all possible outcomes
     # this is done to have initial weight initialization
     random_examples = action_count
-    
-    # data_provider = mx.ArrayDataProvider(:data => state_space, :label => action_space)
     data_provider = mx.ArrayDataProvider(:data => zeros(state_length, random_examples), :label => zeros(action_count, random_examples))
-    mx.fit(model, nnet_optimizer, data_provider, initializer = mx.NormalInitializer(0.0, 0.1), n_epoch = 1, callbacks = [mx.speedometer()])
+    mx.fit(model, nnet_optimizer, data_provider, initializer = mx.UniformInitializer(0.1), n_epoch = 1, callbacks = [mx.speedometer()])
 
     DQNPolicy(action_space, model, nnet_optimizer, epsilon, epsilon_discount)
 end
@@ -89,5 +88,5 @@ end
 
 function update(policy::DQNPolicy, s::Vector{Float64}, v::Vector{Float32})
     data_provider = mx.ArrayDataProvider(:data => repmat(s, 1, 2), :label => repmat(v, 1, 2))
-    return mx.fit(policy.net, policy.optimizer, data_provider; n_epoch = 3, verbosity = 0)
+    return mx.fit(policy.net, policy.optimizer, data_provider; n_epoch = 4, verbosity = 0)
 end

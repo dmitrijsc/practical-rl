@@ -2,16 +2,11 @@ import PyCall
 import POMDPs: MDP, Policy
 
 #
-# In case you are planning to use the code for anything else than
-# Classic Control from OpenAI gym please pay attention to
-# `states`, `initial_state`, `isterminal` and `action_index` functions as they
-# are OpenAI specific. For example, OpenAI gym assumes action indices to start
-# from 0, but we change it to 1 etc.
+# Atari environment used to play Open AI Classic Control games: https://gym.openai.com/envs/#classic_control
 #
-
-#
-# Define a new type responsible for working with Classic Control from OpenAi gym
-# It also supports other environments with a fixes number of states and actions
+# PS. It also supports multi-dimensional states, but it wont solve them efficiently
+# as they will get converted to 1 dimensional array and will be used in a fully
+# connected layer.
 #
 struct ClassicControlMDP <: MDP{Vector{Float64}, Int64}
     env::PyCall.PyObject
@@ -20,12 +15,12 @@ struct ClassicControlMDP <: MDP{Vector{Float64}, Int64}
 end
 
 #
-# Initializer function that is using PyObject with ToyText environment
+# Initializer function that is using PyObject with Classic Control environment
 # to initialize the variables
 #
 function ClassicControlMDP(env::PyCall.PyObject)
 
-    states = env[:observation_space][:shape][1]
+    states = prod(env[:observation_space][:shape])
     actions = Vector{Int64}(0:(env[:action_space][:n] - 1))
 
     return ClassicControlMDP(env, states, actions)
@@ -38,7 +33,7 @@ states(mdp::ClassicControlMDP) = mdp.state_space_size
 actions(mdp::ClassicControlMDP) = mdp.action_space
 n_states(mdp::ClassicControlMDP) = mdp.state_space_size
 n_actions(mdp::ClassicControlMDP) = length(mdp.action_space)
-initial_state(mdp::ClassicControlMDP, rng::AbstractRNG = MersenneTwister(0)) = mdp.env[:reset]() .* 1.0
+initial_state(mdp::ClassicControlMDP, rng::AbstractRNG = MersenneTwister(0)) = mdp.env[:reset]()[:] .* 1.0
 isterminal(mdp::ClassicControlMDP, s::Vector{Float64}) = iszero(s)
 action_index(mdp::ClassicControlMDP, a::Int64) = a
 
@@ -51,10 +46,10 @@ function generate_sr(mdp::ClassicControlMDP, s::Vector{Float64}, a::Int64)
     state, reward, done = mdp.env[:step](a)
 
     if done
-        return (state .* 0., reward)
+        return (state[:] .* 0., reward)
     end
 
-    return (state * 1., reward)
+    return (state[:] * 1., reward)
 end
 
 

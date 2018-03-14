@@ -6,7 +6,7 @@ import POMDPs: MDP, Policy
 #
 # Define a policy that will act as a deep crossentropy policy
 #
-type DeepCrossentropyPolicy <: Policy
+mutable struct DeepCrossentropyPolicy <: Policy
     action_space::Vector{Int64}
     net::MXNet.mx.FeedForward
 end

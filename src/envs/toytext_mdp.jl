@@ -10,9 +10,9 @@ import POMDPs: MDP, Policy
 
 #
 # Define a new type responsible for working with ToyText from OpenAi gym
-# It also supports other environments with a fixes number of states and actions
+# It also supports other environments with a fixed number of states and actions
 #
-immutable ToyTextMDP <: MDP{Int64, Int64}
+struct ToyTextMDP <: MDP{Int64, Int64}
     env::PyCall.PyObject
     state_space::Vector{Int64}
     action_space::Vector{Int64}

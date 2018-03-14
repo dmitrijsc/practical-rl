@@ -25,9 +25,6 @@ function solve(solver::DQNPolicySolver, pomdp::MDP; verbose = true)
             println("Epoch: $i, Epsilon: $(round(policy.epsilon, 2))")
         end
 
-        #
-        # Q-learning implementation that updates on every step
-        #
         previous_state::Vector{Float64} = initial_state(pomdp)
         rewards = 0.0
 
@@ -37,6 +34,10 @@ function solve(solver::DQNPolicySolver, pomdp::MDP; verbose = true)
             current_action = action_index(pomdp, current_action_i)
             current_state, current_reward = generate_sr(pomdp, previous_state, current_action)
             current_state_terminal = isterminal(pomdp, current_state)
+
+            if j % 1 == 0
+                println("Episode $i step $j reward $rewards, Current action:  $current_action, current reward: $current_reward")
+            end
 
             next_value = if current_state_terminal 0 else maximum(values(policy, current_state)) end
             new_value = current_reward + solver.discount * next_value
@@ -48,6 +49,7 @@ function solve(solver::DQNPolicySolver, pomdp::MDP; verbose = true)
             rewards += current_reward
 
             if current_state_terminal
+                println("Episode $i step $j reward $rewards, Current action:  $current_action, current reward: $current_reward")
                 break
             end
         end
@@ -56,7 +58,6 @@ function solve(solver::DQNPolicySolver, pomdp::MDP; verbose = true)
             policy.epsilon *= solver.epsilon_discount
         end
 
-        # println(rewards)
         last_rewards[i] = rewards
 
         if verbose && (i > 100 && i % solver.print_every_n == 0)

@@ -29,7 +29,8 @@ week_3: SARSA
 - Taxi-v2: 8.5/8.5 ([post](https://solveai.net/2018/02/01/julia-solving-open-ai-taxi-v2-using-sarsa-algorithm/))
 
 week_4: DQN
-- CartPole-v0: 100/100 in 1 episode.
+- CartPole-v0: 100/100 in 1 episode ([post](https://solveai.net/2018/02/27/playing-cartpole-using-julia-and-mxnet-implementation-of-dqn/))
+- Space Invaders: ~220 in average ([post](https://solveai.net/2018/03/12/playing-space-invader-using-dqn-julia-and-mxnet/))
 
 ## T&C
 

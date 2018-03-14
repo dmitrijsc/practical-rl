@@ -6,7 +6,7 @@ import POMDPs: MDP, Policy
 #
 # Define a policy that will act as a deep crossentropy policy
 #
-type DQNPolicy <: Policy
+mutable struct DQNPolicy <: Policy
     action_space::Vector{Int64}
     net::MXNet.mx.FeedForward
     optimizer
@@ -32,20 +32,6 @@ function DQNPolicy(state_length::Int64, action_count::Int64, nnet_spec::Vector{I
 
     action_space = collect(0:(action_count-1))
 
-    # add number of classes as a last hidden layyer if it is different
-    # from the definition supplied by user
-    #if length(nnet_spec) > 1
-    #    throw(ArgumentError("nnet_spec: multi layers networks are not yet supported."))
-    #end
-
-    #if nnet_spec[end] != action_count
-    #    push!(nnet_spec, action_count)
-    #end
-
-    # create simple mlp model
-    # nnet_spec = [(3, :tanh), 2]
-    # mlp = @mx.chain mx.Variable(:data) => mx.MLP(nnet_spec) => mx.LinearRegressionOutput(mx.Variable(:label))
-
     mlp = @mx.chain mx.Variable(:data)
     for layer_size in nnet_spec
         mlp = mx.FullyConnected(mlp, num_hidden=layer_size)
@@ -55,7 +41,7 @@ function DQNPolicy(state_length::Int64, action_count::Int64, nnet_spec::Vector{I
     mlp = mx.FullyConnected(mlp, num_hidden=action_count)
     mlp = mx.LinearRegressionOutput(mlp, mx.Variable(:label))
 
-    model = mx.FeedForward(mlp)
+    model = mx.FeedForward(mlp, context = mx.gpu())
 
     # initialize data provider with identical dataset for all possible outcomes
     # this is done to have initial weight initialization
@@ -87,6 +73,6 @@ function values(policy::DQNPolicy, s::Vector{Float64})
 end
 
 function update(policy::DQNPolicy, s::Vector{Float64}, v::Vector{Float32})
-    data_provider = mx.ArrayDataProvider(:data => repmat(s, 1, 2), :label => repmat(v, 1, 2))
-    return mx.fit(policy.net, policy.optimizer, data_provider; n_epoch = 4, verbosity = 0)
+    data_provider = mx.ArrayDataProvider(:data => repmat(s, 1, length(policy.action_space)), :label => repmat(v, 1, length(policy.action_space)))
+    return mx.fit(policy.net, policy.optimizer, data_provider; n_epoch = 3, verbosity = 0)
 end
